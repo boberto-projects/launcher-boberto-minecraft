@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { logger, database, changePanel } from '../utils.js';
+import { logger, database, changePanel, ApiClient } from '../utils.js';
 
 const { Launch, Status } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
@@ -18,6 +18,7 @@ class Home {
     static id = "home";
     async init(config, news) {
         this.config = config
+        this.apiClient = new ApiClient();
         this.news = await news
         this.database = await new database().init();
 
@@ -28,7 +29,35 @@ class Home {
     }
 
     async initModPackList() {
+        let modPackSelector = document.querySelector(".select-modpacks")
+        let modpacks = await this.apiClient.getAllModPacks();
+        let self = this
 
+        if (modpacks.length === 0) {
+            modPackSelector.innerHTML += `<option value="-1">Nenhum modpack disponível</option>`
+        } else {
+            modPackSelector.innerHTML += `<option value="-1">Nenhum modpack selecionado</option>`
+        }
+
+        for (let i = 0; i < modpacks.length; i++) {
+
+            let modpackName = modpacks[i].name
+            let modpackDefault = modpacks[i].isDefault
+
+            // if (modpackDefault) {
+            //     config.modpack_selected = modpack[i]
+            // }
+
+            modPackSelector.innerHTML += `<option value="${modpacks[i].id}">${modpackName}</option>`
+        }
+        modPackSelector.addEventListener('change', function () {
+            let modpackSelected = modpacks.find(e => e.id == this.value)
+            if (modpackSelected == null) {
+                return;
+            }
+            console.log('teste ' + this.value)
+            self.database.update({ uuid: "1234", ...modpackSelected }, 'modpack-selected');
+        })
     }
 
     async initLaunch() {
@@ -41,6 +70,8 @@ class Home {
             let javaArgs = (await this.database.get('1234', 'java-args')).value;
             let Resolution = (await this.database.get('1234', 'screen')).value;
             let launcherSettings = (await this.database.get('1234', 'launcher')).value;
+            let modpack_selected = (await this.database.get('1234', 'modpack-selected')).value;
+            console.log(JSON.stringify(modpack_selected))
             let screen;
 
             let playBtn = document.querySelector('.play-btn');
@@ -56,19 +87,29 @@ class Home {
                 }
             }
 
+            let modpack_dir = `${dataDirectory}/${pkg.directory}/${modpack_selected.directory}`
+            // let url = `${pkg.url}/modpack/files/${modpack_selected.id}/false`
+
+            if (this.config.game_url === "" || this.config.game_url === undefined || this.config.game_url === null) {
+                var url = `${pkg.url}/modpack/files/${modpack_selected.id}/false`
+            } else {
+                var url = config.game_url
+            }
+
+            console.log(url)
             let opts = {
-                url: this.config.game_url === "" || this.config.game_url === undefined ? `${urlpkg}/files` : this.config.game_url,
+                url: url,//this.config.game_url === "" || this.config.game_url === undefined ? `${urlpkg}/files` : this.config.game_url,
                 authenticator: account,
-                path: `${dataDirectory}/${process.platform == 'darwin' ? this.config.dataDirectory : `.${this.config.dataDirectory}`}`,
-                version: this.config.game_version,
+                path: modpack_dir,
+                version: modpack_selected.gameVersion,
                 detached: launcherSettings.launcher.close === 'close-all' ? false : true,
-                java: this.config.java,
+                java: true,
                 javapath: javaPath.path,
-                args: [...javaArgs.args, ...this.config.game_args],
+                args: [...javaArgs.args],
                 screen,
-                modde: this.config.modde,
-                verify: this.config.verify,
-                ignored: this.config.ignored,
+                modde: true,
+                verify: false,
+                ignored: [],
                 memory: {
                     min: `${ram.ramMin * 1024}M`,
                     max: `${ram.ramMax * 1024}M`
@@ -128,12 +169,12 @@ class Home {
 
         if (!serverPing.error) {
             nameServer.textContent = "boberto.net"; //this.config.status.nameServer;
-            serverMs.innerHTML = `<span class="green">En ligne</span> - ${serverPing.ms}ms`;
+            serverMs.innerHTML = `<span class="green">Online</span> - ${serverPing.ms}ms`;
             online.classList.toggle("off");
             playersConnected.textContent = serverPing.playersConnect;
         } else if (serverPing.error) {
             nameServer.textContent = 'Servidor indisponível';
-            serverMs.innerHTML = `<span class="red">Hors ligne</span>`;
+            serverMs.innerHTML = `<span class="red">Offline</span>`;
         }
     }
 

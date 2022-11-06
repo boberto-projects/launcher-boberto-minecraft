@@ -26,7 +26,7 @@ class Settings {
     }
 
     initAccount() {
-        document.querySelector('.accounts').addEventListener('click', async(e) => {
+        document.querySelector('.accounts').addEventListener('click', async (e) => {
             let uuid = e.target.id;
             let selectedaccount = await this.database.get('1234', 'accounts-selected');
 
@@ -97,7 +97,7 @@ class Settings {
         path.value = javaPath;
         let file = document.querySelector(".path-file");
 
-        document.querySelector(".path-button").addEventListener("click", async() => {
+        document.querySelector(".path-button").addEventListener("click", async () => {
             file.value = '';
             file.click();
             await new Promise((resolve) => {
@@ -126,13 +126,13 @@ class Settings {
         let argsInput = document.querySelector(".args-settings");
 
         if (javaArgsDatabase?.length) argsInput.value = javaArgsDatabase.join(' ');
-    
+
         document.querySelector('.args-settings').addEventListener('change', () => {
             let args = [];
             try {
                 if (argsInput.value.length) {
                     argsInput = argsInput.value.trim().split(/\s+/)
-                    for(let arg of argsInput) {
+                    for (let arg of argsInput) {
                         if (arg === '') continue;
                         if (arg === '--server' || arg === '--port') continue;
                         args.push(arg);
@@ -147,18 +147,18 @@ class Settings {
     async initResolution() {
         let resolutionDatabase = (await this.database.get('1234', 'screen'))?.value?.screen;
         let resolution = resolutionDatabase ? resolutionDatabase : { width: "1280", height: "720" };
-        
+
         let width = document.querySelector(".width-size");
         width.value = resolution.width;
-        
+
         let height = document.querySelector(".height-size");
         height.value = resolution.height;
-    
+
         let select = document.getElementById("select");
         select.addEventListener("change", (event) => {
             let resolution = select.options[select.options.selectedIndex].value.split(" x ");
             select.options.selectedIndex = 0;
-            
+
             width.value = resolution[0];
             height.value = resolution[1];
             this.database.update({ uuid: "1234", screen: { width: resolution[0], height: resolution[1] } }, 'screen');
@@ -178,40 +178,40 @@ class Settings {
         let closeAll = document.getElementById("launcher-close-all");
         let openLauncher = document.getElementById("launcher-open");
 
-        if(settingsLauncher.launcher.close === 'close-launcher') {
+        if (settingsLauncher.launcher.close === 'close-launcher') {
             closeLauncher.checked = true;
-        } else if(settingsLauncher.launcher.close === 'close-all') {
+        } else if (settingsLauncher.launcher.close === 'close-all') {
             closeAll.checked = true;
-        } else if(settingsLauncher.launcher.close === 'open-launcher') {
+        } else if (settingsLauncher.launcher.close === 'open-launcher') {
             openLauncher.checked = true;
         }
 
         closeLauncher.addEventListener("change", () => {
-            if(closeLauncher.checked) {
+            if (closeLauncher.checked) {
                 openLauncher.checked = false;
                 closeAll.checked = false;
             }
-           if(!closeLauncher.checked) closeLauncher.checked = true;
+            if (!closeLauncher.checked) closeLauncher.checked = true;
             settingsLauncher.launcher.close = 'close-launcher';
             this.database.update(settingsLauncher, 'launcher');
         })
 
         closeAll.addEventListener("change", () => {
-            if(closeAll.checked) {
+            if (closeAll.checked) {
                 closeLauncher.checked = false;
                 openLauncher.checked = false;
             }
-            if(!closeAll.checked) closeAll.checked = true;
+            if (!closeAll.checked) closeAll.checked = true;
             settingsLauncher.launcher.close = 'close-all';
             this.database.update(settingsLauncher, 'launcher');
         })
 
         openLauncher.addEventListener("change", () => {
-            if(openLauncher.checked) {
+            if (openLauncher.checked) {
                 closeLauncher.checked = false;
                 closeAll.checked = false;
             }
-            if(!openLauncher.checked) openLauncher.checked = true;
+            if (!openLauncher.checked) openLauncher.checked = true;
             settingsLauncher.launcher.close = 'open-launcher';
             this.database.update(settingsLauncher, 'launcher');
         })
@@ -242,6 +242,10 @@ class Settings {
     async initSettingsDefault() {
         if (!(await this.database.getAll('accounts-selected')).length) {
             this.database.add({ uuid: "1234" }, 'accounts-selected')
+        }
+
+        if (!(await this.database.getAll('modpack-selected')).length) {
+            this.database.add({ uuid: "1234", data: "data" }, 'modpack-selected')
         }
 
         if (!(await this.database.getAll('java-path')).length) {

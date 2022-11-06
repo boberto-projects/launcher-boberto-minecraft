@@ -169,3 +169,7 @@ img {
         transform: rotate(359deg);
     }
 }
+
+.select-modpacks {
+    width: 50%;
+}

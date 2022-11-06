@@ -7,9 +7,11 @@ import config from './utils/config.js';
 import database from './utils/database.js';
 import logger from './utils/logger.js';
 import slider from './utils/slider.js';
+import ApiClient from './utils/apiclient.js';
 
 export {
     config as config,
+    ApiClient as ApiClient,
     database as database,
     logger as logger,
     changePanel as changePanel,

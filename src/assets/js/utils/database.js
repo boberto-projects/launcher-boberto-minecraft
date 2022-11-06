@@ -19,6 +19,10 @@ class database {
                     db.createObjectStore('accounts-selected', { keyPath: "key" });
                 }
 
+                if (!db.objectStoreNames.contains('modpack-selected')) {
+                    db.createObjectStore('modpack-selected', { keyPath: "key" });
+                }
+
                 if (!db.objectStoreNames.contains('java-path')) {
                     db.createObjectStore('java-path', { keyPath: "key" });
                 }
@@ -79,10 +83,10 @@ class database {
 
     update(data, type) {
         let self = this;
-        return new Promise(async(resolve) => {
+        return new Promise(async (resolve) => {
             let store = self.getStore(type);
             let keyCursor = store.openCursor(self.genKey(data.uuid));
-            keyCursor.onsuccess = async(event) => {
+            keyCursor.onsuccess = async (event) => {
                 let cursor = event.target.result;
                 for (let [key, value] of Object.entries({ value: data })) cursor.value[key] = value;
                 resolve(cursor.update(cursor.value));
