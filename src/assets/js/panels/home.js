@@ -88,22 +88,14 @@ class Home {
             }
 
             let modpack_dir = `${dataDirectory}/${pkg.directory}/${modpack_selected.directory}`
-            // let url = `${pkg.url}/modpack/files/${modpack_selected.id}/false`
-
-            if (this.config.game_url === "" || this.config.game_url === undefined || this.config.game_url === null) {
-                var url = `${pkg.url}/modpack/files/${modpack_selected.id}/false`
-            } else {
-                var url = config.game_url
-            }
-
-            console.log(url)
+            let url = `${pkg.url}/modpack/files/${modpack_selected.id}/false`
             let opts = {
                 url: url,//this.config.game_url === "" || this.config.game_url === undefined ? `${urlpkg}/files` : this.config.game_url,
                 authenticator: account,
                 path: modpack_dir,
                 version: modpack_selected.gameVersion,
                 detached: launcherSettings.launcher.close === 'close-all' ? false : true,
-                java: true,
+                //java: true,
                 javapath: javaPath.path,
                 args: [...javaArgs.args],
                 screen,
@@ -115,7 +107,7 @@ class Home {
                     max: `${ram.ramMax * 1024}M`
                 }
             }
-
+            console.log(opts)
             playBtn.style.display = "none"
             info.style.display = "block"
             launch.Launch(opts);
