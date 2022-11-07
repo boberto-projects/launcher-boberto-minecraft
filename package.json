@@ -1,7 +1,7 @@
 {
     "name": "selvania-launcher",
     "preductname": "Selvania Launcher",
-    "version": "1.0.5",
+    "version": "1.0.1",
     "description": "Launcher Mincraft custom (crack, premium)",
     "main": "src/app.js",
     "author": "Luuxis",
