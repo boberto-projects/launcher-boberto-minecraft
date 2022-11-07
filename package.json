@@ -1,10 +1,10 @@
 {
-    "name": "selvania-launcher",
-    "preductname": "Selvania Launcher",
-    "version": "1.0.1",
+    "name": "boberto-minecraft-launcher",
+    "preductname": "Boberto Minecraft Launcher",
+    "version": "1.0.4-beta",
     "description": "Launcher Mincraft custom (crack, premium)",
     "main": "src/app.js",
-    "author": "Luuxis",
+    "author": "Luuxis, robertocpaes.dev",
     "url": "http://modpackmanager.robertocpaes.dev",
     "engines": {
         "node": "18.x.x"
@@ -12,7 +12,8 @@
     "scripts": {
         "start": "cross-env-shell NODE_ENV=dev electron .",
         "build": "node build.js",
-        "dev": "nodemon --exec npm start"
+        "dev": "nodemon --exec npm start",
+        "deploy": "electron-builder -w -p always"
     },
     "license": "CC0",
     "nodemonConfig": {
