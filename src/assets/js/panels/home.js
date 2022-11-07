@@ -100,8 +100,8 @@ class Home {
                 args: [...javaArgs.args],
                 screen,
                 modde: true,
-                verify: false,
-                ignored: [],
+                verify: modpack_selected.isVerifyMods,
+                ignored: ["crash-reports", "logs", "resourcepacks", "resources", "saves", "shaderpacks", "options.txt", "optionsof.txt"],
                 memory: {
                     min: `${ram.ramMin * 1024}M`,
                     max: `${ram.ramMax * 1024}M`
