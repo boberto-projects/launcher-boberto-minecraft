@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { logger, database, changePanel, ApiClient } from '../utils.js';
+import { logger, database, changePanel } from '../utils.js';
 
 const { Launch, Status } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
@@ -16,12 +16,11 @@ const dataDirectory = process.env.APPDATA || (process.platform == 'darwin' ? `${
 
 class Home {
     static id = "home";
-    async init(config, news) {
+    async init(config, news, modpacks) {
         this.config = config
-        this.apiClient = new ApiClient();
         this.news = await news
         this.database = await new database().init();
-
+        this.modpacks = modpacks
         this.initLaunch();
         this.initModPackList();
         this.initStatusServer();
@@ -30,28 +29,23 @@ class Home {
 
     async initModPackList() {
         let modPackSelector = document.querySelector(".select-modpacks")
-        let modpacks = await this.apiClient.getAllModPacks();
-        let self = this
 
-        if (modpacks.length === 0) {
+        let self = this
+        if (this.modpacks.length === 0) {
             modPackSelector.innerHTML += `<option value="-1">Nenhum modpack disponível</option>`
         } else {
             modPackSelector.innerHTML += `<option value="-1">Nenhum modpack selecionado</option>`
         }
 
-        for (let i = 0; i < modpacks.length; i++) {
+        for (let i = 0; i < this.modpacks.length; i++) {
 
-            let modpackName = modpacks[i].name
-            let modpackDefault = modpacks[i].isDefault
+            let modpackName = this.modpacks[i].name
+            let modpackDefault = this.modpacks[i].isDefault
 
-            // if (modpackDefault) {
-            //     config.modpack_selected = modpack[i]
-            // }
-
-            modPackSelector.innerHTML += `<option value="${modpacks[i].id}">${modpackName}</option>`
+            modPackSelector.innerHTML += `<option value="${this.modpacks[i].id}">${modpackName}</option>`
         }
         modPackSelector.addEventListener('change', function () {
-            let modpackSelected = modpacks.find(e => e.id == this.value)
+            let modpackSelected = this.modpacks.find(e => e.id == this.value)
             if (modpackSelected == null) {
                 return;
             }

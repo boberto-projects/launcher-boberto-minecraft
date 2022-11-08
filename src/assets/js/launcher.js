@@ -11,7 +11,7 @@ const fs = require('fs');
 const { Microsoft, Mojang } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
 
-import { config, logger, changePanel, database, addAccount, accountSelect } from './utils.js';
+import { config, logger, changePanel, database, addAccount, accountSelect, ApiClient } from './utils.js';
 import Login from './panels/login.js';
 import Home from './panels/home.js';
 import Settings from './panels/settings.js';
@@ -24,6 +24,7 @@ class Launcher {
         if (process.platform == "win32") this.initFrame();
         this.config = await config.GetConfig().then(res => res);
         this.news = await config.GetNews().then(res => res);
+        this.modpacks = await new ApiClient().getAllModPacks();
         this.database = await new database().init();
         this.createPanels(Login, Home, skin, Settings);
         this.getaccounts();
@@ -73,7 +74,7 @@ class Launcher {
             div.classList.add("panel", panel.id)
             div.innerHTML = fs.readFileSync(`${__dirname}/panels/${panel.id}.html`, "utf8");
             panelsElem.appendChild(div);
-            new panel().init(this.config, this.news);
+            new panel().init(this.config, this.news, this.modpacks);
         }
     }
 
