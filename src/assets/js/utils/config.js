@@ -34,6 +34,10 @@ class Config {
             return false;
         }
     }
+
+    LauncherTitle() {
+        return pkg.preductname + "-" + pkg.version;
+    }
 }
 
 export default new Config;

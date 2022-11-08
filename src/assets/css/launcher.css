@@ -173,3 +173,10 @@ img {
 .select-modpacks {
     width: 50%;
 }
+
+#launcher-title {
+    font-family: "Poppins";
+    letter-spacing: 0px;
+    color: #E1E1E1;
+    text-align: left;
+}

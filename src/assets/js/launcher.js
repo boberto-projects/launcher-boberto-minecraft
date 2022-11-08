@@ -6,6 +6,7 @@
 'use strict';
 
 // libs 
+
 const fs = require('fs');
 const { Microsoft, Mojang } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
@@ -59,6 +60,9 @@ class Launcher {
         document.querySelector("#close").addEventListener("click", () => {
             ipcRenderer.send("main-window-close");
         })
+
+        let launcher_title = document.querySelector("#launcher-title")
+        launcher_title.textContent = config.LauncherTitle()
     }
 
     createPanels(...panels) {
@@ -122,7 +126,7 @@ class Launcher {
                     if (account.uuid === selectaccount) accountSelect(refresh.uuid)
                 } else if (account.meta.type === 'Mojang') {
                     if (account.meta.offline) {
-                    console.log(`Initializing Crack account ${account.name}...`);
+                        console.log(`Initializing Crack account ${account.name}...`);
                         addAccount(account);
                         if (account.uuid === selectaccount) accountSelect(account.uuid)
                         continue;

@@ -1,7 +1,7 @@
 const builder = require('electron-builder')
 const { preductname } = require('./package.json')
-
-
+require("dotenv").config()
+console.log(process.env)
 builder.build({
     config: {
         generateUpdatesFilesForAllChannels: true,
@@ -18,6 +18,13 @@ builder.build({
                 target: "nsis",
                 arch: ["x64"]
             }],
+        },
+
+        publish: {
+            provider: "s3",
+            endpoint: "https://minio.robertocpaes.dev",
+            bucket: "updates",
+            acl: "public-read"
         },
         nsis: {
             oneClick: true,

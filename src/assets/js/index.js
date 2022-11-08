@@ -22,9 +22,11 @@ class Splash {
 
     async startAnimation() {
         let splashes = [
-            { "message": "Je... vie...", "author": "Luuxis" },
-            { "message": "Salut je suis du code.", "author": "Luuxis" },
-            { "message": "Linux n' ai pas un os, mais un kernel.", "author": "Luuxis" }
+            { "message": "Minecraft é legal até aparecer alguém com TNT.", "author": "robertocpaes" },
+            { "message": "Minecraft tá saturado.", "author": "phekiko" },
+            { "message": "Atualiza o JAVA. Foi o que apareceu no log.", "author": "desconhecido" }
+
+
         ]
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
@@ -43,18 +45,18 @@ class Splash {
     }
 
     async checkUpdate() {
-        //  if (dev) return this.startLauncher();
-        this.setStatus(`recherche de mise à jour...`);
+        if (dev) return this.startLauncher();
+        this.setStatus("Procurando atualização...");
 
         ipcRenderer.invoke('update-app').then(err => {
             if (err.error) {
                 let error = err.message;
-                this.shutdown(`erreur lors de la recherche de mise à jour :<br>${error}`);
+                this.shutdown(`Erro ao procurar por atualização :<br>${error}`);
             }
         })
 
         ipcRenderer.on('updateAvailable', () => {
-            this.setStatus(`Mise à jour disponible !`);
+            this.setStatus(`Atualização disponível !`);
             this.toggleProgress();
             ipcRenderer.send('start-update');
         })
@@ -74,21 +76,21 @@ class Splash {
             this.startLauncher();
         }).catch(e => {
             console.error(e);
-            return this.shutdown("Aucune connexion internet détectée,<br>veuillez réessayer ultérieurement.");
+            return this.shutdown("Nenhuma conexão com a Internet detectada.<br>tente novamente mais tarde.");
         })
     }
 
     startLauncher() {
-        this.setStatus(`Démarrage du launcher`);
+        this.setStatus("Iniciando o lançador");
         ipcRenderer.send('main-window-open');
         ipcRenderer.send('update-window-close');
     }
 
     shutdown(text) {
-        this.setStatus(`${text}<br>Arrêt dans 5s`);
+        this.setStatus(`${text}<br>Parando em 5s`);
         let i = 4;
         setInterval(() => {
-            this.setStatus(`${text}<br>Arrêt dans ${i--}s`);
+            this.setStatus(`${text}<br>Parando em ${i--}s`);
             if (i < 0) ipcRenderer.send('update-window-close');
         }, 1000);
     }

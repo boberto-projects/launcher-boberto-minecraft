@@ -1,7 +1,7 @@
 {
     "name": "boberto-minecraft-launcher",
     "preductname": "Boberto Minecraft Launcher",
-    "version": "1.0.5-beta",
+    "version": "1.0.9",
     "description": "Launcher Mincraft custom (crack, premium)",
     "main": "src/app.js",
     "author": "Luuxis, robertocpaes.dev",
@@ -13,7 +13,7 @@
         "start": "cross-env-shell NODE_ENV=dev electron .",
         "build": "node build.js",
         "dev": "nodemon --exec npm start",
-        "deploy": "electron-builder -w -p always"
+        "deploy": "electron-builder --win -p always"
     },
     "license": "CC0",
     "nodemonConfig": {
@@ -30,9 +30,5 @@
         "electron": "^20.0.0",
         "electron-builder": "^23.0.3",
         "nodemon": "^2.0.16"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/brutalzinn/launcher-boberto-minecraft.git"
     }
 }
