@@ -13,7 +13,7 @@
         "start": "cross-env-shell NODE_ENV=dev electron .",
         "build": "node build.js",
         "dev": "nodemon --exec npm start",
-        "deploy": "electron-builder --win -p always"
+        "deploy": "electron-builder --linux --windows -p always"
     },
     "license": "CC0",
     "nodemonConfig": {

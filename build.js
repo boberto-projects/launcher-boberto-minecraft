@@ -1,13 +1,11 @@
 const builder = require('electron-builder')
 const { preductname } = require('./package.json')
-require("dotenv").config()
-console.log(process.env)
 builder.build({
     config: {
-        generateUpdatesFilesForAllChannels: true,
         appId: preductname,
         productName: preductname,
         artifactName: "${productName}-${os}-${arch}.${ext}",
+        generateUpdatesFilesForAllChannels: true,
         files: ["src/**/*", "package.json", "LICENSE.md"],
         directories: { "output": "dist" },
         compression: 'maximum',
@@ -47,6 +45,9 @@ builder.build({
                 arch: ["x64"]
             }, {
                 target: "tar.gz",
+                arch: ["x64"]
+            }, {
+                target: "snap",
                 arch: ["x64"]
             }]
         }
