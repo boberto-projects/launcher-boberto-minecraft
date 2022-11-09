@@ -19,19 +19,21 @@ class Splash {
         this.progress = document.querySelector("progress");
         document.addEventListener('DOMContentLoaded', () => this.startAnimation());
     }
-
-    async startAnimation() {
+    startRandomText() {
         let splashes = [
             { "message": "Minecraft é legal até aparecer alguém com TNT.", "author": "robertocpaes" },
             { "message": "Minecraft tá saturado.", "author": "phekiko" },
+            { "message": "Minecraft e Terraria não tem nada em comum.", "author": "robertocpaes" },
             { "message": "Atualiza o JAVA. Foi o que apareceu no log.", "author": "desconhecido" }
-
-
         ]
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
-        this.splashAuthor.children[0].textContent = "@" + splash.author;
-        await sleep(100);
+        this.splashAuthor.textContent = "@" + splash.author;
+    }
+    async startAnimation() {
+        setInterval(() => {
+            this.startRandomText()
+        }, 3500)
         document.querySelector("#splash").style.display = "block";
         await sleep(500);
         this.splash.classList.add("opacity");
@@ -40,13 +42,13 @@ class Splash {
         this.splashMessage.classList.add("opacity");
         this.splashAuthor.classList.add("opacity");
         this.message.classList.add("opacity");
-        await sleep(1000);
+
         this.checkUpdate();
     }
 
     async checkUpdate() {
-        if (dev) return this.startLauncher();
-        this.setStatus("Procurando atualização...");
+        // if (dev) return this.startLauncher();
+        this.setStatus("Procurando atualizações...");
 
         ipcRenderer.invoke('update-app').then(err => {
             if (err.error) {
