@@ -23,6 +23,10 @@ class Splash {
         let splashes = [
             { "message": "Minecraft é legal até aparecer alguém com TNT.", "author": "robertocpaes" },
             { "message": "Minecraft tá saturado.", "author": "phekiko" },
+            { "message": "Vou fazer um rio para proteger a casa.", "author": "dani" },
+            { "message": "Olha minha casa, que linda!", "author": "fernandacpaes" },
+            { "message": "Que gatinho fofo e quadrado!", "author": "gatuna" },
+            { "message": "Era a casa da sua irmã?!", "author": "darth_vader_sushiman" },
             { "message": "Minecraft e Terraria não tem nada em comum.", "author": "robertocpaes" },
             { "message": "Atualiza o JAVA. Foi o que apareceu no log.", "author": "desconhecido" }
         ]
@@ -31,10 +35,8 @@ class Splash {
         this.splashAuthor.textContent = "@" + splash.author;
     }
     async startAnimation() {
-        setInterval(() => {
-            this.startRandomText()
-        }, 3500)
         document.querySelector("#splash").style.display = "block";
+        this.startRandomText()
         await sleep(500);
         this.splash.classList.add("opacity");
         await sleep(500);
@@ -43,6 +45,9 @@ class Splash {
         this.splashAuthor.classList.add("opacity");
         this.message.classList.add("opacity");
 
+        setInterval(() => {
+            this.startRandomText()
+        }, 10000)
         this.checkUpdate();
     }
 
