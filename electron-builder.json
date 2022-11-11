@@ -6,19 +6,20 @@
     "generateUpdatesFilesForAllChannels": true,
     "asar": true,
     "directories": {
-        "output": "dist"
+        "output": "dist",
+        "buildResources": "resources"
     },
     "files": [
         "src/**/*",
         "package.json",
         "LICENSE.md"
     ],
-    "publish": {
-        "provider": "s3",
-        "endpoint": "https://minio.robertocpaes.dev",
-        "bucket": "updates",
-        "acl": "public-read"
-    },
+    "publish": [
+        {
+            "provider": "custom",
+            "url": "http://localhost:5555/launcher/latest"
+        }
+    ],
     "win": {
         "icon": "./src/assets/images/icon.ico",
         "target": [
