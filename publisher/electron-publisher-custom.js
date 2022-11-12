@@ -1,6 +1,3 @@
-const electronPublish = require('electron-publish');
-var FormData = require('form-data');
-const pkg = require("../package.json")
 const { httpExecutor } = require("builder-util/out/nodeHttpExecutor");
 const mime = require("mime");
 const { stat } = require("fs-extra");
@@ -62,10 +59,10 @@ class Publisher extends HttpPublisher {
         const protocol = configuration.protocol || "http";
         const port = configuration.port || (protocol === "https" ? 443 : 80);
         const method = configuration.method || "POST";
-        const pathPattern = configuration.path || "/launcher/upload/${version}";
+        const pathPattern = configuration.path || "/launcher/upload/${version}/";
         const connectionOptions = configuration.connectionOptions || {};
         const headers = configuration.headers || {};
-        const apiKey = configuration.apiKey
+        const apiKey = configuration.apiKey || process.env.ApiKey
         const archName = Arch[arch];
         const path = pathPattern
             .replace(/\$\{version\}/g, appInfo.version)
