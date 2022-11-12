@@ -1,11 +1,10 @@
 {
     "name": "boberto-minecraft-launcher",
     "preductname": "Boberto Minecraft Launcher",
-    "version": "1.0.3",
+    "version": "1.0.0",
     "description": "Launcher Mincraft custom (crack, premium)",
     "main": "src/app.js",
     "author": "Luuxis, robertocpaes.dev",
-    "url": "http://modpackmanager.robertocpaes.dev",
     "engines": {
         "node": "18.x.x"
     },
@@ -36,9 +35,10 @@
     },
     "bobertoApiConfig": {
         "latest_update_url": "localhost",
+        "path": "/launcher/upload/${version}/",
         "protocol": "http",
         "port": 5555,
         "method": "POST",
-        "apiKey": "80411e07-e9f9-45f3-8e2e-0678225f6655"
+        "apiKey": "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp"
     }
 }

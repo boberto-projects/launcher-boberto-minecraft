@@ -17,7 +17,7 @@
     "publish": [
         {
             "provider": "custom",
-            "url": "http://localhost:5555/launcher/latest"
+            "url": "http://localhost:5555/launcher/versions/latest"
         }
     ],
     "win": {

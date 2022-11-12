@@ -20,6 +20,12 @@ if (dev) {
     let appPath = path.resolve('./AppData/Launcher').replace(/\\/g, '/');
     if (!fs.existsSync(appPath)) fs.mkdirSync(appPath, { recursive: true });
     app.setPath('userData', appPath);
+
+    Object.defineProperty(app, 'isPackaged', {
+        get() {
+            return true;
+        }
+    });
 }
 
 const gotTheLock = app.requestSingleInstanceLock();

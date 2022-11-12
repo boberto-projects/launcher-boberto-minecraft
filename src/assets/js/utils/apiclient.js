@@ -1,55 +1,48 @@
 const fetch = require("node-fetch")
 const pkg = require('../package.json');
+const axios = require("axios")
 
 class ApiClient {
 
   constructor() {
-    this.url = pkg.url
-    this.apiKey = "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp";
+    const configuration = pkg["bobertoApiConfig"] || {};
+    this.apiKey = configuration.apiKey || process.env.ApiKey
+    this.port = configuration.port || (protocol === "https" ? 443 : 80);
+    this.protocol = configuration.protocol || "http";
+    this.hostname = configuration.hostname || "localhost";
+    this.baseUrl = `${this.protocol}:${this.port}/${this.hostname}`
+
+    this.axios = axios.create({
+      baseURL: this.baseUrl,
+      headers: {
+        "Content-type": "application/json",
+        'ApiKey': this.apiKey
+      }
+    });
   }
 
   async getManifest() {
-    return await fetch(`${this.url}/launcher`, {
-      method: 'GET',
-      headers: {
-        "ApiKey": this.apiKey
-      }
+    return await this.axios.get("/launcher", {
     }).then(res => res.json());
   }
 
   async getAllModPacks() {
-    return await fetch(`${this.url}/modpack`, {
-      method: 'GET',
-      headers: {
-        "ApiKey": this.apiKey
-      }
+    return await this.axios.get("/modpack", {
     }).then(res => res.json());
   }
 
   async getGlobalConfigs() {
-    return await fetch(`${this.url}/config`, {
-      method: 'GET',
-      headers: {
-        "ApiKey": this.apiKey
-      }
+    return await axios.get("/config", {
     }).then(res => res.json());
   }
 
   async getModPackById(id) {
-    return await fetch(`${this.url}/modpack/${id}`, {
-      method: 'GET',
-      headers: {
-        "ApiKey": this.apiKey
-      }
+    return await axios.get(`/modpack/${id}`, {
     }).then(res => res.json());
   }
 
   async getModPackFilesById(id, forceCache = false) {
-    return await fetch(`${this.url}/modpack/files/${id}/${forceCache}`, {
-      method: 'GET',
-      headers: {
-        "ApiKey": this.apiKey
-      }
+    return await axios.get(`/modpack/files/${id}/${forceCache}`, {
     }).then(res => res.json());
   }
 
