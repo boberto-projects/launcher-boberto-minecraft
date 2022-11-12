@@ -62,14 +62,13 @@ class Publisher extends HttpPublisher {
         const protocol = configuration.protocol || "http";
         const port = configuration.port || (protocol === "https" ? 443 : 80);
         const method = configuration.method || "POST";
-        const pathPattern = configuration.path || "/launcher/upload/${version}/${name}";
+        const pathPattern = configuration.path || "/launcher/upload/${version}";
         const connectionOptions = configuration.connectionOptions || {};
         const headers = configuration.headers || {};
         const apiKey = configuration.apiKey
         const archName = Arch[arch];
         const path = pathPattern
             .replace(/\$\{version\}/g, appInfo.version)
-            .replace(/\$\{name\}/g, fileName)
 
         return await httpExecutor.doApiRequest(
             configureRequestOptions({
@@ -89,6 +88,7 @@ class Publisher extends HttpPublisher {
             this.context.cancellationToken,
             requestProcessor
         );
+
     }
 
 }
