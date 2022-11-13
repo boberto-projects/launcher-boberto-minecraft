@@ -6,6 +6,7 @@
 const { app, ipcMain } = require('electron');
 const { Microsoft } = require('minecraft-java-core');
 const { autoUpdater } = require('electron-updater')
+const pkg = require('../package.json');
 
 const path = require('path');
 const fs = require('fs');
@@ -67,7 +68,7 @@ app.on('window-all-closed', () => {
 });
 
 autoUpdater.autoDownload = false;
-
+autoUpdater.setFeedURL(pkg.bobertoApiConfig.latest_update_url);
 ipcMain.handle('update-app', () => {
     return new Promise(async (resolve, reject) => {
         autoUpdater.checkForUpdates().then(() => {

@@ -5,13 +5,14 @@
 
 'use strict';
 const { ipcRenderer } = require('electron');
-import { config } from './utils.js';
+import { ApiClient } from './utils.js';
 
 let dev = process.env.NODE_ENV === 'dev';
 
 
 class Splash {
     constructor() {
+        this.ApiClient = new ApiClient();
         this.splash = document.querySelector(".splash");
         this.splashMessage = document.querySelector(".splash-message");
         this.splashAuthor = document.querySelector(".splash-author");
@@ -52,7 +53,7 @@ class Splash {
     }
 
     async checkUpdate() {
-        // if (dev) return this.startLauncher();
+        if (dev) return this.startLauncher();
         this.setStatus("Procurando atualizações...");
 
         ipcRenderer.invoke('update-app').then(err => {
@@ -78,7 +79,7 @@ class Splash {
     }
 
     async maintenanceCheck() {
-        config.GetConfig().then(res => {
+        this.ApiClient.getConfig().then(res => {
             if (res.maintenance) return this.shutdown(res.maintenance_message);
             this.startLauncher();
         }).catch(e => {

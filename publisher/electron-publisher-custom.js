@@ -5,6 +5,7 @@ const { Arch } = require("builder-util");
 const { basename, join } = require("path");
 const { configureRequestOptions } = require("builder-util-runtime");
 const { HttpPublisher } = require("electron-publish/out/publisher");
+require('dotenv').config()
 
 
 class Publisher extends HttpPublisher {
@@ -59,7 +60,7 @@ class Publisher extends HttpPublisher {
         const protocol = configuration.protocol || "http";
         const port = configuration.port || (protocol === "https" ? 443 : 80);
         const method = configuration.method || "POST";
-        const pathPattern = configuration.path || "/launcher/upload/${version}/";
+        const pathPattern = configuration.upload_path || "/launcher/upload/${version}/";
         const connectionOptions = configuration.connectionOptions || {};
         const headers = configuration.headers || {};
         const apiKey = configuration.apiKey || process.env.ApiKey

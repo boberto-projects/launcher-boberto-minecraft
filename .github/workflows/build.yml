@@ -10,11 +10,16 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest]
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
+
+      - name: create env file
+        run: |
+          touch .env
+          echo ApiKey=${{ secrets.API_KEY }} >> .env
 
       - name: Set up Node
         uses: actions/setup-node@v1
@@ -34,4 +39,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.github_token }}
         run: npm run build
+        shell: bash
+
+      - name: Deploy
+        env:
+          GH_TOKEN: ${{ secrets.github_token }}
+        run: npm run deploy
         shell: bash

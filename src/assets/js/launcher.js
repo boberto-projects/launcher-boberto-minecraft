@@ -22,8 +22,10 @@ class Launcher {
         this.initLog();
         console.log("Initializing Launcher...");
         if (process.platform == "win32") this.initFrame();
-        this.config = await config.GetConfig().then(res => res);
-        this.news = await config.GetNews().then(res => res);
+        this.config = await new ApiClient().getConfig();
+
+        //this.config = await config.GetConfig().then(res => res);
+        // this.news = await config.GetNews().then(res => res);
         this.modpacks = await new ApiClient().getAllModPacks();
         this.database = await new database().init();
         this.createPanels(Login, Home, skin, Settings);

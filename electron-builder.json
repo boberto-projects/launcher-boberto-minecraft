@@ -16,20 +16,18 @@
     ],
     "publish": [
         {
-            "provider": "custom",
-            "url": "http://localhost:5555/launcher/versions/latest"
+            "provider": "custom"
         }
     ],
     "win": {
         "icon": "./src/assets/images/icon.ico",
-        "target": [
-            {
-                "target": "nsis",
-                "arch": [
-                    "x64"
-                ]
-            }
-        ]
+        "verifyUpdateCodeSignature": false,
+        "target": {
+            "target": "nsis",
+            "arch": [
+                "x64"
+            ]
+        }
     },
     "nsis": {
         "oneClick": true,
