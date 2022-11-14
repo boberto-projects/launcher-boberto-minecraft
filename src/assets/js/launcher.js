@@ -22,12 +22,12 @@ class Launcher {
         this.initLog();
         console.log("Initializing Launcher...");
         if (process.platform == "win32") this.initFrame();
-        this.config = await new ApiClient().getConfig();
-
-        //this.config = await config.GetConfig().then(res => res);
-        // this.news = await config.GetNews().then(res => res);
-        this.modpacks = await new ApiClient().getAllModPacks();
+        this.apiClient = new ApiClient()
         this.database = await new database().init();
+        this.config = await this.apiClient.getConfig();
+        this.modpacks = await this.apiClient.getAllModPacks();
+
+
         this.createPanels(Login, Home, skin, Settings);
         this.getaccounts();
     }
@@ -76,7 +76,7 @@ class Launcher {
             div.classList.add("panel", panel.id)
             div.innerHTML = fs.readFileSync(`${__dirname}/panels/${panel.id}.html`, "utf8");
             panelsElem.appendChild(div);
-            new panel().init(this.config, this.news, this.modpacks);
+            new panel().init(this.config, this.modpacks);
         }
     }
 

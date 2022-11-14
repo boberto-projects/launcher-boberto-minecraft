@@ -29,12 +29,12 @@ class Config {
     //         return false;
     //     }
     // }
-    GetUpdateUrl() {
+    GetApiUrl() {
         const configuration = pkg["bobertoApiConfig"] || {};
         const port = configuration.port || (protocol === "https" ? 443 : 80);
         const protocol = configuration.protocol || "http";
         const hostname = configuration.hostname || "localhost";
-        return `${protocol}://${hostname}:${port}/launcher/versions/latest`
+        return `${protocol}://${hostname}:${port}`
     }
     LauncherTitle() {
         return pkg.preductname + "-" + pkg.version;

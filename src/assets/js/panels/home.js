@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { logger, database, changePanel } from '../utils.js';
+import { logger, database, changePanel, config } from '../utils.js';
 
 const { Launch, Status } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
@@ -16,11 +16,13 @@ const dataDirectory = process.env.APPDATA || (process.platform == 'darwin' ? `${
 
 class Home {
     static id = "home";
-    async init(config, news, modpacks) {
-        this.config = config
-        this.news = await news
+    async init(remoteConfig, modpacks) {
+        this.config = remoteConfig
+        // this.news = await news
         this.database = await new database().init();
         this.modpacks = modpacks
+        console.log("home laucher" + JSON.stringify(this.modpacks))
+
         this.initLaunch();
         this.initModPackList();
         this.initStatusServer();
@@ -45,13 +47,18 @@ class Home {
             modPackSelector.innerHTML += `<option value="${this.modpacks[i].id}">${modpackName}</option>`
         }
         modPackSelector.addEventListener('change', function () {
-            let modpackSelected = this.modpacks.find(e => e.id == this.value)
+            let modpackSelected = self.modpacks.find(e => e.id == this.value)
+            console.log("modpaclselected" + modpackSelected)
+
             if (modpackSelected == null) {
                 return;
             }
+            self.initStatusServer();
+
             console.log('teste ' + this.value)
             self.database.update({ uuid: "1234", ...modpackSelected }, 'modpack-selected');
         })
+
     }
 
     async initLaunch() {
@@ -82,20 +89,20 @@ class Home {
             }
 
             let modpack_dir = `${dataDirectory}/${pkg.directory}/${modpack_selected.directory}`
-            let url = `${pkg.url}/modpack/files/${modpack_selected.id}/false`
+            let url = `${config.GetApiUrl()}/modpack/files/${modpack_selected.id}/false`
             let opts = {
                 url: url,//this.config.game_url === "" || this.config.game_url === undefined ? `${urlpkg}/files` : this.config.game_url,
                 authenticator: account,
                 path: modpack_dir,
                 version: modpack_selected.gameVersion,
                 detached: launcherSettings.launcher.close === 'close-all' ? false : true,
-                //java: true,
+                java: modpack_selected.java,
                 javapath: javaPath.path,
                 args: [...javaArgs.args],
                 screen,
                 modde: true,
                 verify: modpack_selected.isVerifyMods,
-                ignored: ["crash-reports", "logs", "resourcepacks", "resources", "saves", "shaderpacks", "options.txt", "optionsof.txt"],
+                ignored: modpack_selected.ignored,
                 memory: {
                     min: `${ram.ramMin * 1024}M`,
                     max: `${ram.ramMax * 1024}M`
@@ -139,7 +146,7 @@ class Home {
                 progressBar.style.display = "none"
                 info.style.display = "none"
                 playBtn.style.display = "block"
-                info.innerHTML = `Vérification`
+                info.innerHTML = `Verificação`
                 new logger('Launcher', '#7289da');
                 console.log('Close');
             })
@@ -151,10 +158,12 @@ class Home {
         let serverMs = document.querySelector('.server-text .desc');
         let playersConnected = document.querySelector('.etat-text .text');
         let online = document.querySelector(".etat-text .online");
-        let serverPing = await new Status("boberto.net", 25565).getStatus();
+        let modpack_selected = (await this.database.get('1234', 'modpack-selected')).value;
+
+        let serverPing = await new Status(modpack_selected.serverIp, modpack_selected.serverPort).getStatus();
 
         if (!serverPing.error) {
-            nameServer.textContent = "boberto.net"; //this.config.status.nameServer;
+            nameServer.textContent = modpack_selected.serverIp; //this.config.status.nameServer;
             serverMs.innerHTML = `<span class="green">Online</span> - ${serverPing.ms}ms`;
             online.classList.toggle("off");
             playersConnected.textContent = serverPing.playersConnect;
