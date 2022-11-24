@@ -36,9 +36,10 @@
     "bobertoApiConfig": {
         "latest_update_url": "https://modpackmanager.robertocpaes.dev/launcher/versions/latest/",
         "hostname": "modpackmanager.robertocpaes.dev",
-        "upload_path": "/launcher/upload/${version}/",
+        "upload_path": "/launcher/upload/${version}",
         "protocol": "https",
         "port": 443,
-        "method": "POST"
+        "method": "POST",
+        "apiKey": "80411e07-e9f9-45f3-8e2e-0678225f6655"
     }
 }
