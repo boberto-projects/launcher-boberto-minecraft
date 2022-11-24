@@ -63,7 +63,7 @@ class Publisher extends HttpPublisher {
         const pathPattern = configuration.upload_path || "/launcher/upload/${version}/";
         const connectionOptions = configuration.connectionOptions || {};
         const headers = configuration.headers || {};
-        const apiKey = configuration.apiKey || process.env.ApiKey
+        const apiKey = configuration.apiKey || process.env.APIKEY
         const archName = Arch[arch];
         const path = pathPattern
             .replace(/\$\{version\}/g, appInfo.version)
