@@ -21,18 +21,13 @@ class Home {
         // this.news = await news
         this.database = await new database().init();
         this.modpacks = modpacks
-        console.log("home laucher" + JSON.stringify(this.modpacks))
-
         this.initLaunch();
         this.initModPackList();
-        this.initStatusServer();
         this.initBtn();
     }
 
     async initModPackList() {
         let modPackSelector = document.querySelector(".select-modpacks")
-
-        let self = this
         if (this.modpacks.length === 0) {
             modPackSelector.innerHTML += `<option value="-1">Nenhum modpack disponível</option>`
         } else {
@@ -45,20 +40,11 @@ class Home {
             let modpackDefault = this.modpacks[i].isDefault
 
             modPackSelector.innerHTML += `<option value="${this.modpacks[i].id}">${modpackName}</option>`
-        }
-        modPackSelector.addEventListener('change', function () {
-            let modpackSelected = self.modpacks.find(e => e.id == this.value)
-            console.log("modpaclselected" + modpackSelected)
-
-            if (modpackSelected == null) {
-                return;
+            if (modpackDefault) {
+                modPackSelector.value = this.modpacks[i].id;
             }
-            self.initStatusServer();
 
-            console.log('teste ' + this.value)
-            self.database.update({ uuid: "1234", ...modpackSelected }, 'modpack-selected');
-        })
-
+        }
     }
 
     async initLaunch() {
@@ -88,8 +74,10 @@ class Home {
                 }
             }
 
-            let modpack_dir = `${dataDirectory}/${pkg.directory}/${modpack_selected.directory}`
+            let modpack_dir = `${dataDirectory}/${pkg.name}/modpacks/${modpack_selected.directory}`
             let url = `${config.GetApiUrl()}/modpack/files/${modpack_selected.id}/false`
+            let isModded = modpack_selected.forgeVersion != null && modpack_selected.fabricVersion != null
+            console.log("----url " + url)
             let opts = {
                 url: url,//this.config.game_url === "" || this.config.game_url === undefined ? `${urlpkg}/files` : this.config.game_url,
                 authenticator: account,
@@ -100,7 +88,7 @@ class Home {
                 javapath: javaPath.path,
                 args: [...javaArgs.args],
                 screen,
-                modde: true,
+                modde: isModded,
                 verify: modpack_selected.isVerifyMods,
                 ignored: modpack_selected.ignored,
                 memory: {
@@ -115,7 +103,7 @@ class Home {
 
             launch.on('progress', (DL, totDL) => {
                 progressBar.style.display = "block"
-                document.querySelector(".text-download").innerHTML = `Téléchargement ${((DL / totDL) * 100).toFixed(0)}%`
+                document.querySelector(".text-download").innerHTML = `Baixando ${((DL / totDL) * 100).toFixed(0)}%`
                 ipcRenderer.send('main-window-progress', { DL, totDL })
                 progressBar.value = DL;
                 progressBar.max = totDL;
@@ -127,7 +115,7 @@ class Home {
 
             launch.on('check', (e) => {
                 progressBar.style.display = "block"
-                document.querySelector(".text-download").innerHTML = `Vérification ${((DL / totDL) * 100).toFixed(0)}%`
+                document.querySelector(".text-download").innerHTML = `Verificação ${((DL / totDL) * 100).toFixed(0)}%`
                 progressBar.value = DL;
                 progressBar.max = totDL;
 
@@ -137,7 +125,7 @@ class Home {
                 new logger('Minecraft', '#36b030');
                 if (launcherSettings.launcher.close === 'close-launcher') ipcRenderer.send("main-window-hide");
                 progressBar.style.display = "none"
-                info.innerHTML = `Demarrage en cours...`
+                info.innerHTML = `Ocorreu um erro`
                 console.log(e);
             })
 
@@ -153,17 +141,18 @@ class Home {
         })
     }
 
-    async initStatusServer() {
+    async getStatusServer() {
         let nameServer = document.querySelector('.server-text .name');
+        let addressServer = document.querySelector('.server-text .andress');
         let serverMs = document.querySelector('.server-text .desc');
         let playersConnected = document.querySelector('.etat-text .text');
         let online = document.querySelector(".etat-text .online");
         let modpack_selected = (await this.database.get('1234', 'modpack-selected')).value;
-
         let serverPing = await new Status(modpack_selected.serverIp, modpack_selected.serverPort).getStatus();
 
         if (!serverPing.error) {
-            nameServer.textContent = modpack_selected.serverIp; //this.config.status.nameServer;
+            nameServer.textContent = modpack_selected.name; //this.config.status.nameServer;
+            addressServer.textContent = `${modpack_selected.serverIp}:${modpack_selected.serverPort}`;
             serverMs.innerHTML = `<span class="green">Online</span> - ${serverPing.ms}ms`;
             online.classList.toggle("off");
             playersConnected.textContent = serverPing.playersConnect;
@@ -174,9 +163,21 @@ class Home {
     }
 
     initBtn() {
+        let modPackSelector = document.querySelector(".select-modpacks")
+        self = this;
+
         document.querySelector('.settings-btn').addEventListener('click', () => {
             changePanel('settings');
         });
+        modPackSelector.addEventListener('change', function () {
+            let modpackSelected = self.modpacks.find(e => e.id == this.value)
+            if (modpackSelected == null) {
+                return;
+            }
+            console.log('teste ' + this.value)
+            self.database.update({ uuid: "1234", ...modpackSelected }, 'modpack-selected');
+            self.getStatusServer();
+        })
     }
 
     async getdate(e) {

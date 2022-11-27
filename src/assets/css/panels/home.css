@@ -254,6 +254,14 @@
     transition: color .2s;
 }
 
+.andress {
+    position: absolute;
+    font: normal normal bold 17px/25px Poppins;
+    color: #E1E1E1;
+    left: 70px;
+    transition: color .2s;
+}
+
 .desc {
     position: absolute;
     font: normal normal normal 11px/17px Poppins;

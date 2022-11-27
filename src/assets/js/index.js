@@ -29,7 +29,9 @@ class Splash {
             { "message": "Que gatinho fofo e quadrado!", "author": "gatuna" },
             { "message": "Era a casa da sua irmã?!", "author": "darth_vader_sushiman" },
             { "message": "Minecraft e Terraria não tem nada em comum.", "author": "robertocpaes" },
-            { "message": "Atualiza o JAVA. Foi o que apareceu no log.", "author": "desconhecido" }
+            { "message": "Atualiza o JAVA. Foi o que apareceu no log.", "author": "desconhecido" },
+            { "message": "Achou um bug? Não me conte.", "author": "administrador desconhecido" }
+
         ]
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
