@@ -38,5 +38,6 @@ jobs:
       - name: Deploy
         env:
           GH_TOKEN: ${{ secrets.github_token }}
+          APIKEY: ${{ secrets.APIKEY }}
         run: npm run deploy
         shell: bash

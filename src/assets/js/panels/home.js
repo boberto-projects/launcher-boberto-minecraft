@@ -8,7 +8,7 @@
 import { logger, database, changePanel, config } from '../utils.js';
 
 const { Launch, Status } = require('minecraft-java-core');
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, clipboard } = require('electron');
 const launch = new Launch();
 const pkg = require('../package.json');
 
@@ -18,7 +18,6 @@ class Home {
     static id = "home";
     async init(remoteConfig, modpacks) {
         this.config = remoteConfig
-        // this.news = await news
         this.database = await new database().init();
         this.modpacks = modpacks
         this.initLaunch();
@@ -42,9 +41,10 @@ class Home {
             modPackSelector.innerHTML += `<option value="${this.modpacks[i].id}">${modpackName}</option>`
             if (modpackDefault) {
                 modPackSelector.value = this.modpacks[i].id;
+                await this.getStatusServer(this.modpacks[i]);
             }
 
-        }
+        }             
     }
 
     async initLaunch() {
@@ -76,7 +76,7 @@ class Home {
 
             let modpack_dir = `${dataDirectory}/${pkg.name}/modpacks/${modpack_selected.directory}`
             let url = `${config.GetApiUrl()}/modpack/files/${modpack_selected.id}/false`
-            let isModded = modpack_selected.forgeVersion != null && modpack_selected.fabricVersion != null
+            let isModded = modpack_selected.forgeVersion !== null || modpack_selected.fabricVersion !== null
             console.log("----url " + url)
             let opts = {
                 url: url,//this.config.game_url === "" || this.config.game_url === undefined ? `${urlpkg}/files` : this.config.game_url,
@@ -141,23 +141,24 @@ class Home {
         })
     }
 
-    async getStatusServer() {
+    async getStatusServer(modPackSelected) {
         let nameServer = document.querySelector('.server-text .name');
-        let addressServer = document.querySelector('.server-text .andress');
+        document.querySelector('.copy-ip-btn').addEventListener('click', async () => {
+            let endereco = `${modPackSelected.serverIp}:${modPackSelected.serverPort}`
+            clipboard.writeText(endereco);
+            alert(`IP do servidor copiado para área de transferência. Cole na aba de endereços no menu "multiplayer"`);
+        });
         let serverMs = document.querySelector('.server-text .desc');
         let playersConnected = document.querySelector('.etat-text .text');
         let online = document.querySelector(".etat-text .online");
-        let modpack_selected = (await this.database.get('1234', 'modpack-selected')).value;
-        let serverPing = await new Status(modpack_selected.serverIp, modpack_selected.serverPort).getStatus();
-
+        let serverPing = await new Status(modPackSelected.serverIp, modPackSelected.serverPort).getStatus();
         if (!serverPing.error) {
-            nameServer.textContent = modpack_selected.name; //this.config.status.nameServer;
-            addressServer.textContent = `${modpack_selected.serverIp}:${modpack_selected.serverPort}`;
+            nameServer.textContent = modPackSelected.name;
             serverMs.innerHTML = `<span class="green">Online</span> - ${serverPing.ms}ms`;
             online.classList.toggle("off");
             playersConnected.textContent = serverPing.playersConnect;
         } else if (serverPing.error) {
-            nameServer.textContent = 'Servidor indisponível';
+            nameServer.textContent = 'Servidor indisponível :(';
             serverMs.innerHTML = `<span class="red">Offline</span>`;
         }
     }
@@ -169,24 +170,15 @@ class Home {
         document.querySelector('.settings-btn').addEventListener('click', () => {
             changePanel('settings');
         });
-        modPackSelector.addEventListener('change', function () {
+        modPackSelector.addEventListener('change', async function  () {
             let modpackSelected = self.modpacks.find(e => e.id == this.value)
             if (modpackSelected == null) {
                 return;
             }
             console.log('teste ' + this.value)
             self.database.update({ uuid: "1234", ...modpackSelected }, 'modpack-selected');
-            self.getStatusServer();
+            await self.getStatusServer(modpackSelected);
         })
-    }
-
-    async getdate(e) {
-        let date = new Date(e)
-        let year = date.getFullYear()
-        let month = date.getMonth() + 1
-        let day = date.getDate()
-        let allMonth = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
-        return { year: year, month: allMonth[month - 1], day: day }
     }
 }
 export default Home;

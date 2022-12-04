@@ -71,6 +71,19 @@
     box-shadow: 0 0 5px #00bd7a;
 }
 
+.copy-ip-btn {
+    top: 10px;
+    width: 210px;
+    height: 37px;
+    border-radius: 20px;
+    border: none;
+    background: #00bd7a;
+    font: normal normal bold 15px/20px Poppins;
+    color: #121212;
+    margin: 15px 0;
+    box-shadow: 0 0 5px #00bd7a;
+}
+
 .download-content {
     position: absolute;
     top: 50%;
