@@ -20,9 +20,9 @@ class Home {
         this.config = remoteConfig
         this.database = await new database().init();
         this.modpacks = modpacks
-        this.initLaunch();
-        this.initModPackList();
-        this.initBtn();
+        await this.initLaunch();
+        await this.initModPackList();
+        await this.initBtn();
     }
 
     async initModPackList() {
@@ -143,11 +143,6 @@ class Home {
 
     async getStatusServer(modPackSelected) {
         let nameServer = document.querySelector('.server-text .name');
-        document.querySelector('.copy-ip-btn').addEventListener('click', async () => {
-            let endereco = `${modPackSelected.serverIp}:${modPackSelected.serverPort}`
-            clipboard.writeText(endereco);
-            alert(`IP do servidor copiado para área de transferência. Cole na aba de endereços no menu "multiplayer"`);
-        });
         let serverMs = document.querySelector('.server-text .desc');
         let playersConnected = document.querySelector('.etat-text .text');
         let online = document.querySelector(".etat-text .online");
@@ -163,7 +158,7 @@ class Home {
         }
     }
 
-    initBtn() {
+    async initBtn() {
         let modPackSelector = document.querySelector(".select-modpacks")
         self = this;
 
@@ -179,6 +174,12 @@ class Home {
             self.database.update({ uuid: "1234", ...modpackSelected }, 'modpack-selected');
             await self.getStatusServer(modpackSelected);
         })
+        document.querySelector('.copy-ip-btn').addEventListener('click', async () => {
+            let modPackSelected = (await this.database.get('1234', 'modpack-selected')).value;
+            let endereco = `${modPackSelected.serverIp}:${modPackSelected.serverPort}`
+            clipboard.writeText(endereco);
+            alert(`IP do servidor copiado para área de transferência. Cole na aba de endereços no menu "multiplayer"`);
+        });
     }
 }
 export default Home;
