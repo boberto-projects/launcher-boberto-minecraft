@@ -1,5 +1,5 @@
 const builder = require('electron-builder')
-const { preductname } = require('./package.json')
+const { productname } = require('./package.json')
 builder.build({
     config: {
         "productName": "Boberto Minecraft Launcher",

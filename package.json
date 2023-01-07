@@ -1,8 +1,8 @@
 {
     "name": "boberto-minecraft-launcher",
-    "preductname": "Boberto Minecraft Launcher",
-    "version": "2.0.3",
-    "description": "Launcher Mincraft custom (crack, premium)",
+    "productname": "Boberto Minecraft Launcher",
+    "version": "2.0.4",
+    "description": "Boberto minecraft launcher Launcher Mincraft custom (crack, premium)",
     "main": "src/app.js",
     "author": "Luuxis, robertocpaes.dev",
     "engines": {

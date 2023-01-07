@@ -79,7 +79,7 @@ class Home {
             let isModded = modpack_selected.forgeVersion !== null || modpack_selected.fabricVersion !== null
             console.log("----url " + url)
             let opts = {
-                url: url,//this.config.game_url === "" || this.config.game_url === undefined ? `${urlpkg}/files` : this.config.game_url,
+                url: url,
                 authenticator: account,
                 path: modpack_dir,
                 version: modpack_selected.gameVersion,
