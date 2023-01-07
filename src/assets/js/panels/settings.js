@@ -7,6 +7,7 @@
 
 import { database, changePanel, accountSelect, Slider } from '../utils.js';
 const dataDirectory = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
+const pkg = require('../package.json');
 
 const os = require('os');
 
@@ -91,7 +92,7 @@ class Settings {
     async initJavaPath() {
         let javaDatabase = (await this.database.get('1234', 'java-path'))?.value?.path;
         let javaPath = javaDatabase ? javaDatabase : 'Use a versão do java fornecida com o iniciador';
-        document.querySelector(".info-path").textContent = `${dataDirectory.replace(/\\/g, "/")}/${process.platform == 'darwin' ? this.config.dataDirectory : `.${this.config.dataDirectory}`}/runtime`;
+        document.querySelector(".info-path").textContent = `${dataDirectory.replace(/\\/g, "/")}/${process.platform == 'darwin' ? pkg.name : `.${pkg.name}`}/runtime`;
 
         let path = document.querySelector(".path");
         path.value = javaPath;

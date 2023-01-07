@@ -16,8 +16,8 @@ const dataDirectory = process.env.APPDATA || (process.platform == 'darwin' ? `${
 
 class Home {
     static id = "home";
-    async init(remoteConfig, modpacks) {
-        this.config = remoteConfig
+    async init(config, modpacks) {
+        this.config = config
         this.database = await new database().init();
         this.modpacks = modpacks
         await this.initLaunch();

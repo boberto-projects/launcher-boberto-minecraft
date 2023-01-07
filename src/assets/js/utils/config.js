@@ -4,7 +4,6 @@
  */
 
 const pkg = require('../package.json');
-const fetch = require("node-fetch")
 class Config {
     GetApiUrl() {
         const configuration = pkg["bobertoApiConfig"] || {};
